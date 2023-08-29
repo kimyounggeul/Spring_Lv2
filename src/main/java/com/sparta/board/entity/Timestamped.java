@@ -9,12 +9,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Getter
-@MappedSuperclass // JPA Entity 클래스들이 해당 추상 클래스를 상속할 경우 createdAt, modifiedAt 처럼 추상 클래스에 선언한 멤버변수를 컬럼으로 인식할 수 있습니다.
-@EntityListeners(AuditingEntityListener.class)//해당 클래스에 Auditing 기능을 포함시켜 줍니다.
+// JPA Entity 클래스들이 해당 추상 클래스를 상속할 경우 createdAt, modifiedAt 처럼 추상 클래스에 선언한 멤버변수를 컬럼으로 인식할 수 있습니다.
+@MappedSuperclass
+//해당 클래스에 Auditing 기능을 포함시켜 줍니다.
+@EntityListeners(AuditingEntityListener.class)
 public abstract class Timestamped {
-
-    @CreatedDate //Entity 객체가 생성되어 저장될 때 시간이 자동으로 저장됩니다.
-    @Column(updatable = false) //업데이트가 되지않게 막아줌
+    // Entity 객체가 생성되어 저장될 때 시간이 자동으로 저장됩니다.
+    @CreatedDate
+    // 업데이트가 되지않게 막아줌
+    // 최초 생성시간만 저장됨
+    @Column(updatable = false)
+    //날짜 타입(java.util.Date, java.util.Calendar)을 매핑할 때 사용합니다.
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 

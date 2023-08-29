@@ -7,17 +7,18 @@ import java.time.LocalDateTime;
 
 @Getter
 public class BoardResponseDto {
-    private long id;
-    private String title;
-    private String username;
-    private String contents;
-    private String password;
-    private LocalDateTime createAt;
-    private LocalDateTime modifiedAt;
+    private long id; // 게시글 구분을 위한 id
+    private String title; // 제목
+    private String username; // 작성자명
+    private String contents; // 작성내용
+    private String password; //비밀번호
+    private LocalDateTime createAt; // 게시글 생성 날짜
+    private LocalDateTime modifiedAt; // 게시글 수정 날짜
 
-    private String msg;
+    private String msg; // 게시글 삭제시, 삭제 성공 메시지
 
     // Entity -> ResponseDto 변환
+    // Board 라는 Entitiy에 저장값들을 호출해서 getxxx() 메서드를 이용해 BoardResponseDto의 필드에 담음
     public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.username = board.getUsername();
@@ -28,6 +29,7 @@ public class BoardResponseDto {
         this.modifiedAt = board.getModifiedAt();
     }
 
+    // 게시글 삭제시, 삭제 성공 메시지
     public BoardResponseDto(String msg){
         this.msg = msg;
     }
