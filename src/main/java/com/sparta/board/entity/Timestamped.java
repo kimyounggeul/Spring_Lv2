@@ -9,7 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Getter
-// JPA Entity 클래스들이 해당 추상 클래스를 상속할 경우 createdAt, modifiedAt 처럼 추상 클래스에 선언한 멤버변수를 컬럼으로 인식할 수 있습니다.
+// JPA Entity 클래스들이 해당 추상 클래스를 상속할 경우 createdAt, modifiedAt 처럼
+// 추상 클래스에 선언한 멤버변수를 컬럼으로 인식할 수 있습니다.
 @MappedSuperclass
 //해당 클래스에 Auditing 기능을 포함시켜 줍니다.
 @EntityListeners(AuditingEntityListener.class)
@@ -25,7 +26,7 @@ public abstract class Timestamped {
 
     @LastModifiedDate //조회한 Entity 객체의 값을 변경할 때 변경된 시간이 자동으로 저장됩니다.
     @Column
-    @Temporal(TemporalType.TIMESTAMP) //날짜 타입(java.util.Date, java.util.Calendar)을 매핑할 때 사용합니다.
+    @Temporal(TemporalType.TIMESTAMP)
 //    *DATE : ex) 2023-01-01
 //    *TIME : ex) 20:21:14
 //    *TIMESTAMP : ex) 2023-01-01 20:22:38.771000

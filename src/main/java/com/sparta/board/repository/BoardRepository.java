@@ -10,6 +10,8 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
     // findAllBy   OrderBy     ModifiedAt     Desc()
-    // 전체셀렉트     정렬          이 필드로      내림차순
-    List<Board> findAllByOrderByModifiedAtDesc(); // Memo 테이블에서 ModifiedAt 즉, 수정 시간을 기준으로 전체 데이터를 내림차순으로 가져오는 SQL을 실행하는 메서드
+    // 전체셀렉트     정렬          이 필드로      내림차순.
+    // Memo 테이블에서 ModifiedAt 즉, 수정 시간을 기준으로 전체 데이터를
+    // 내림차순으로 가져오는 SQL을 실행하는 메서드
+    List<Board> findAllByOrderByModifiedAtDesc();
 }
