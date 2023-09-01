@@ -5,11 +5,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration // 스프링 서버가 뜰 때 IoC 컨테이너에 의해 bean으로 저장
+@Configuration
 public class PasswordConfig {
 
-    @Bean // Bean을 이용해 passwordEncoder 메서드 등록
+    @Bean
+    // Bean으로 등록하고자 하는 객체를 반환하는 메서드
+    // 메서드의 클래스 위에 @Configuration 해야함
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // PasswordEncoder의 구현체가 BCryptPasswordEncoder  이걸 사용해 패스워드 인코드(암호화)
+        return new BCryptPasswordEncoder(); //BCrypt 비밀번호를 암호화 해주는 Hash 함수
     }
 }
