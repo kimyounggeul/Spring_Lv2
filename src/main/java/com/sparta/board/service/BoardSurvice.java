@@ -6,6 +6,7 @@ import com.sparta.board.entity.Board;
 import com.sparta.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class BoardSurvice {
         return boardRepository.findById(id).stream().map(BoardResponseDto::new).toList();
     }
 
+    @Transactional
     public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto) {
         // DB에 존재 하는지 확인
         Board board = findBoard(id);
