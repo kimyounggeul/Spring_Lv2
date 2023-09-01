@@ -2,7 +2,12 @@ package com.sparta.board.controller;
 
 import com.sparta.board.dto.BoardRequestDto;
 import com.sparta.board.dto.BoardResponseDto;
+import com.sparta.board.dto.LoginRequestDto;
+import com.sparta.board.dto.UserResponseDto;
 import com.sparta.board.service.BoardSurvice;
+import com.sparta.board.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +24,13 @@ import java.util.List;
 public class BoardController {
     // BoardSurvice 와 연결 인스턴스화
     private final BoardSurvice boardSurvice;
+    private final UserService userService;
 
     // 생성자
-    public BoardController(BoardSurvice boardSurvice) {
+    public BoardController(BoardSurvice boardSurvice, UserService userService) {
         this.boardSurvice = boardSurvice;
+        this.userService = userService;
+
     }
 
     @PostMapping("/post")
@@ -67,6 +75,11 @@ public class BoardController {
     public BoardResponseDto deleteBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto){
         // DB 내용 삭제
         return boardSurvice.deleteBoard(id, requestDto);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<UserResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
+         return userService.login(loginRequestDto,res);
     }
 }
 
