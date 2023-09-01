@@ -2,7 +2,6 @@ package com.sparta.board.jwt;
 
 
 import com.sparta.board.entity.UserRoleEnum;
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

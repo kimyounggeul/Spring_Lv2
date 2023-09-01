@@ -76,10 +76,6 @@ public class BoardController {
         // DB 내용 삭제
         return boardSurvice.deleteBoard(id, requestDto);
     }
-
-    @PostMapping("/auth/login")
-    public ResponseEntity<UserResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse res){
-         return userService.login(loginRequestDto,res);
-    }
 }
+
 
