@@ -56,7 +56,7 @@ public class JwtUtil {
 
     // JWT 생성
     // 토큰 생성
-    public String createToken(String username, UserRoleEnum role) {
+    public String createToken(String username) {
 
         Date date = new Date();
 
@@ -64,7 +64,7 @@ public class JwtUtil {
                 Jwts.builder()
                         .setSubject(username) // 사용자 식별자값(ID)
 
-                        .claim(AUTHORIZATION_KEY, role) // 사용자 권한
+                       // .claim(AUTHORIZATION_KEY, role) // 사용자 권한
 
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
@@ -98,7 +98,7 @@ public class JwtUtil {
         }
 
 
-    // 토큰 검증
+
         logger.error("Not Found Token");
         throw new NullPointerException("Not Found Token");
     }

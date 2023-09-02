@@ -1,6 +1,6 @@
 package com.sparta.board.entity;
 
-import com.sparta.board.entity.UserRoleEnum;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,18 +22,18 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    // EnumTyp을 데이터베이스 컬럼에 저장할때 사용
-    @Enumerated(value = EnumType.STRING)
-    private UserRoleEnum role;
-
-    public User(String username, String password, String email, UserRoleEnum role) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.email = email;
-        this.role = role;
+
     }
 }
+
+//    @Column(nullable = false, unique = true)
+//   private String email;
+
+//    @Column(nullable = false)
+    // EnumTyp을 데이터베이스 컬럼에 저장할때 사용
+//    @Enumerated(value = EnumType.STRING)
+//    private UserRoleEnum role;
+

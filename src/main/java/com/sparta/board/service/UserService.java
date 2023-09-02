@@ -7,6 +7,7 @@ import com.sparta.board.dto.UserResponseDto;
 import com.sparta.board.entity.User;
 import com.sparta.board.entity.UserRoleEnum;
 import com.sparta.board.jwt.JwtUtil;
+import com.sparta.board.repository.BoardRepository;
 import com.sparta.board.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,45 +33,50 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         // 회원 중복 확인
+
         Optional<User> checkUsername = userRepository.findByUsername(username);
         if (checkUsername.isPresent()) { //isPresent() 현재 Optional에 넣어준 값이 존재하는지 확인해주는 메서드
             UserResponseDto dto = new UserResponseDto();
-            dto.setMsg("등록된 사용자가 있습니다"); // msg란에 에러메시지 값으로 초기화
-            dto.setStatusCode(String.valueOf(HttpStatus.NOT_FOUND.value())); // statusCode에 404 값으로 입력
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+            dto.setMsg("중복된 사용자명입니다.");
+            dto.setStatusCode(String.valueOf(HttpStatus.CONFLICT.value()));
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(dto);
+        } else {  // 사용자 등록
+            User user = new User(username, password);
+            userRepository.save(user);
+            UserResponseDto dto = new UserResponseDto();
+            dto.setMsg("회원가입이 완료되었습니다"); // msg란에 에러메시지 값으로 초기화
+            dto.setStatusCode(String.valueOf(HttpStatus.OK.value())); // statusCode에 404 값으로 입력
+            return ResponseEntity.status(HttpStatus.OK).body(dto);
         }
+
+
+    }
+
 
         // email 중복확인
-        String email = requestDto.getEmail();
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
-            UserResponseDto dto = new UserResponseDto();
-            dto.setMsg("중복된 Email 입니다"); // msg란에 에러메시지 값으로 초기화
-            dto.setStatusCode(String.valueOf(HttpStatus.NOT_FOUND.value())); // statusCode에 404 값으로 입력
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
-        }
+//        String email = requestDto.getEmail();
+ //       Optional<User> checkEmail = userRepository.findByEmail(email);
+//        if (checkEmail.isPresent()) {
+ //           UserResponseDto dto = new UserResponseDto();
+ //           dto.setMsg("중복된 Email 입니다"); // msg란에 에러메시지 값으로 초기화
+  //          dto.setStatusCode(String.valueOf(HttpStatus.NOT_FOUND.value())); // statusCode에 404 값으로 입력
+  //          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+  //      }
 
-        // 사용자 ROLE 확인
-        UserRoleEnum role = UserRoleEnum.USER;
-        if (requestDto.isAdmin()) {
-            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-                UserResponseDto dto = new UserResponseDto();
-                dto.setMsg("관리자 암호가 틀려 등록이 불가능합니다."); // msg란에 에러메시지 값으로 초기화
-                dto.setStatusCode(String.valueOf(HttpStatus.NOT_FOUND.value())); // statusCode에 404 값으로 입력
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
-            }
-            role = UserRoleEnum.ADMIN;
-        }
+//        // 사용자 ROLE 확인
+//        UserRoleEnum role = UserRoleEnum.USER;
+//        if (requestDto.isAdmin()) {
+//            if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
+//                UserResponseDto dto = new UserResponseDto();
+//                dto.setMsg("관리자 암호가 틀려 등록이 불가능합니다."); // msg란에 에러메시지 값으로 초기화
+//                dto.setStatusCode(String.valueOf(HttpStatus.NOT_FOUND.value())); // statusCode에 404 값으로 입력
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
+//            }
+//            role = UserRoleEnum.ADMIN;
+//        }
 
-        // 사용자 등록
-        User user = new User(username, password, email, role);
-        userRepository.save(user);
 
-        UserResponseDto dto = new UserResponseDto();
-        dto.setMsg("회원가입이 완료되었습니다"); // msg란에 에러메시지 값으로 초기화
-        dto.setStatusCode(String.valueOf(HttpStatus.OK.value())); // statusCode에 404 값으로 입력
-        return ResponseEntity.status(HttpStatus.OK).body(dto);
-    }
+
 
     @Transactional
     public ResponseEntity<UserResponseDto> login (LoginRequestDto requestDto, HttpServletResponse res) {
@@ -91,7 +97,7 @@ public class UserService {
             // 비밀번호 일치 확인 entity에 저장된 비밀번호와 내가 받은 비밀번호 매치되는지 확인
             if (passwordEncoder.matches(password, user.getPassword())) {
                 //ID 존재하고 비밀번호 일치할경우 인증이 된 경우 JWT 생성하고 쿠키에 저장을 해서 response 객체에 추가
-                String token = jwtUtil.createToken(user.getUsername(), user.getRole());
+                String token = jwtUtil.createToken(user.getUsername());
                 jwtUtil.addJwtToCookie(token, res);
 
                 // ID 존재하고 비밀번호 일치할경우 ResponseEntity를 이용해 메세지와 상태코드 반환

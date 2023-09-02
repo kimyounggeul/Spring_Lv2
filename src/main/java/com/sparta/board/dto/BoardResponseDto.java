@@ -11,11 +11,11 @@ public class BoardResponseDto {
     private String title; // 제목
     private String username; // 작성자명
     private String contents; // 작성내용
-    private String password; //비밀번호
-    private LocalDateTime createAt; // 게시글 생성 날짜
     private LocalDateTime modifiedAt; // 게시글 수정 날짜
+    private LocalDateTime createAt; // 게시글 생성 날짜
 
     private String msg; // 게시글 삭제시, 삭제 성공 메시지
+    //private String password; //비밀번호
 
     // Entity -> ResponseDto 변환
     // Board 라는 Entitiy에 저장값들을 호출해서 getxxx() 메서드를 이용해 BoardResponseDto의 필드에 담음
@@ -23,7 +23,7 @@ public class BoardResponseDto {
         this.id = board.getId();
         this.username = board.getUsername();
         this.title = board.getTitle();
-        this.password = board.getPassword();
+       // this.password = board.getPassword();
         this.contents = board.getContents();
         this.createAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
