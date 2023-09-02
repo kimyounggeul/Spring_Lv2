@@ -70,24 +70,29 @@ public class BoardSurvice {
         // boardRepository의 findById 메서드로 매개변수로 넣은 해당 id 값을 찾는다
         return boardRepository.findById(id).stream().map(BoardResponseDto::new).toList();
     }
+    @Transactional
+    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto,String tokenValue) {
+        //JWT 토큰 substring
+        String token = jwtUtil.substringToken(tokenValue);
+        // 토큰 검증
+        if (!jwtUtil.validateToken(token)) {
+            throw new IllegalArgumentException("Token Error");
+        }
+        //토큰에서 사용자 정보 가져오기 (토큰에서 getBody로 Claims 가져옴)
+        Claims info = jwtUtil.getUserInfoFromToken(token);
+        //사용자 username
+        String username = info.getSubject();//DB에 존재 하는지 확인
+        Board board = findBoard(id);
 
- //   @Transactional
-//    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto) {
-        // DB에 존재 하는지 확인
- //       Board board = findBoard(id);
+        if (board.getUsername().equals(username)) {
+            board.update(requestDto);
+            return new BoardResponseDto(board);
+        } else {
+            throw new IllegalArgumentException("실패");
+        }
 
-        // DB 내용 수정
-        // 비밀 번호 일치여부 확인
-        // board Entity에 저장된 password와 사용자가 requestDto로 입력한 password를
-        // equals()메서드를 이용해서 일치 여부 학인
- //       if (board.getPassword().equals(requestDto.getPassword())) {
-            //일치할 경우 board에 접근하여 requestDto 대로 update 한다
- //           board.update(requestDto);
- //     } else {
- //           return new BoardResponseDto("비밀번호가 일치하지 않습니다");
-//        }
-//        return new BoardResponseDto(board);
-//    }
+
+   }
 
     public ResponseEntity<UserResponseDto> deleteBoard(Long id, String tokenValue) {
 
@@ -104,15 +109,19 @@ public class BoardSurvice {
 
         // DB에 존재 하는지 확인
         Board board = findBoard(id);
-        if(board.getUsername().equals(username)) {
+        try {
+            if (board.getUsername().equals(username)) {
+                boardRepository.delete(board);
+                UserResponseDto dto = new UserResponseDto();
+                dto.setMsg("성공"); // msg란에 에러메시지 값으로 초기화
+                dto.setStatusCode(String.valueOf(HttpStatus.OK.value())); // statusCode에 404 값으로 입력
+                return ResponseEntity.status(HttpStatus.OK).body(dto);
+            } else {
+                    throw new IllegalArgumentException("실패");
+            }
+        }catch (IllegalArgumentException e){
             UserResponseDto dto = new UserResponseDto();
-            dto.setMsg("성공"); // msg란에 에러메시지 값으로 초기화
-            dto.setStatusCode(String.valueOf(HttpStatus.OK.value())); // statusCode에 404 값으로 입력
-            return ResponseEntity.status(HttpStatus.OK).body(dto);
-        }
-        else{
-            UserResponseDto dto = new UserResponseDto();
-            dto.setMsg("실패"); // msg란에 에러메시지 값으로 초기화
+            dto.setMsg(e.getMessage()); // msg란에 에러메시지 값으로 초기화
             dto.setStatusCode(String.valueOf(HttpStatus.NOT_FOUND.value())); // statusCode에 404 값으로 입력
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dto);
         }

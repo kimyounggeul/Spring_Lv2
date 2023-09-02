@@ -9,6 +9,7 @@ import com.sparta.board.service.BoardSurvice;
 import com.sparta.board.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +49,7 @@ public class BoardController {
     // @RequestBody : Post 안에 저장된 body 값들을 key:value 형태 (JSON 타입)으로 짝지음 body에 들어오는 데이터들을 가지고옴
     // BoardRequestDto : JSON 타입으로 넘어오는 데이터를 받는 객체(데이터를 저장할 공간)
     // requestDto : requestDto 매개변수에 데이터를 담아서, boardService의 createBoard 메서드로 실어보냄
-    public BoardResponseDto createBoard(@RequestBody BoardRequestDto requestDto,@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue){
+    public BoardResponseDto createBoard(@RequestBody BoardRequestDto requestDto,@CookieValue(AUTHORIZATION_HEADER) String tokenValue){
         // 생성 (requestbody부분의 데이터와 requestheader부분의 tokenvalue 받아옴)
 
         // 매개변수 requestDto 를 메소드 createBoard를 사용하여 boardSurvice로 반환(boardSurvice와 연결)
@@ -74,16 +75,17 @@ public class BoardController {
     }
 
 
-//    @PutMapping("/post/{id}")
+    @PutMapping("/post/{id}")
     // 수정을 위해 BoardResponseDto의 필드값이 필요
-//    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto) {
-        // DB 내용 수정
+    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable Long id, @RequestBody BoardRequestDto requestDto,@CookieValue(AUTHORIZATION_HEADER) String tokenValue) {
+         //DB 내용 수정
         // requestDto의 id를 가지고옴
-//        return boardSurvice.updateBoard(id, requestDto);
-//    }
+        BoardResponseDto boardResponseDto = boardSurvice.updateBoard(id, requestDto,tokenValue);
+        return new ResponseEntity<>(boardResponseDto, HttpStatus.OK);
+    }
 
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<UserResponseDto> deleteBoard(@PathVariable Long id,@CookieValue(JwtUtil.AUTHORIZATION_HEADER) String tokenValue){
+    public ResponseEntity<UserResponseDto> deleteBoard(@PathVariable Long id,@CookieValue(AUTHORIZATION_HEADER) String tokenValue){
         // DB 내용 삭제
         return boardSurvice.deleteBoard(id, tokenValue);
     }

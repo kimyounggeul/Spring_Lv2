@@ -35,8 +35,6 @@ public class Board extends Timestamped {
     @Column(name = "contents", nullable = false, length = 1000)
     private String contents;
 
-//    @Column(name = "password", nullable = false)
-//    private String password;
 
     // 게시글 작성
     // Entity 클래스와 Controller 간의 데이터 전달을 위해 사용함
@@ -46,16 +44,15 @@ public class Board extends Timestamped {
         // Board Entity 객체의 username 필드를 BoardRequestDto 객체의 getUsername 메서드로 부터 얻은 값으로 초기화
         this.username = username;
         this.contents = requestDto.getContents();
-//        this.password = requestDto.getPassword();
         this.title = requestDto.getTitle();
     }
 
     // 게시글 수정
     // update 메서드가 Board Entity 객체를 주어진 BoardRequestDto 객체의 값으로 업데이트 하는 역활을 수행
     public void update(BoardRequestDto requestDto){
-        this.username = requestDto.getUsername();
+
         this.contents = requestDto.getContents();
-        //this.password = requestDto.getPassword();
+
         this.title = requestDto.getTitle();
     }
 }
