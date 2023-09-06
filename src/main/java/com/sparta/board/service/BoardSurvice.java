@@ -90,8 +90,6 @@ public class BoardSurvice {
         } else {
             throw new IllegalArgumentException("실패");
         }
-
-
    }
 
     public ResponseEntity<UserResponseDto> deleteBoard(Long id, String tokenValue) {
